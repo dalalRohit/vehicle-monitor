@@ -38,6 +38,9 @@ var VeichleSchema = new mongoose.Schema({
     permission: {
         type: Boolean,
         required: true
+    },
+    new: {
+        type: Boolean
     }
 }, { strict: false });
 

@@ -104,12 +104,11 @@ router.get('/delete', async (req, res) => {
 router.post('/validate', upload.single('image'), async (req, res, next) => {
   try {
     var data = req.body.data;
-    // console.log(data);
 
-    //store incoming photo temp
     var img = data.imageUrl;
     var imgData = img.replace(/^data:image\/\w+;base64,/, "");
     var buf = Buffer.from(imgData, 'base64');
+    //store image in temp folder
     fs.writeFile(path.join(__dirname, `./../temp/sample.jpg`),
       buf,
       { encoding: 'base64' },
@@ -119,7 +118,6 @@ router.post('/validate', upload.single('image'), async (req, res, next) => {
           console.log(err);
         }
       });
-
 
     var noPlate = `${data.state}-${data.area}-${data.series}-${data.number}`;
     const body = {
@@ -132,34 +130,53 @@ router.post('/validate', upload.single('image'), async (req, res, next) => {
       image: buf
     };
 
-    let all = await ListModel.getAllList();
+    //function to save document to DB
+    function saveVeichle(body) {
+      var newVeichle = new VeichleModel(body);
+      newVeichle.save()
+        .then((data) => {
+          if (data['permission'] && data['new'] === false) {
+            res.json({ msg: `Veichle ${data['numberplate']} is allowed to enter!`, type: 'success' })
+          }
+          else if (data['new']) {
+            res.json({ msg: `Veichle ${data['numberplate']} is allowed to enter!`, type: 'warning' })
+          } else {
+            res.json({ msg: `Veichle ${data['numberplate']} is not allowed to enter!`, type: 'danger' })
+          }
+        })
+    }
 
+    //get all vehicles from the list
+    let all = await ListModel.getAllList();
+    //loop through white/black list
     for (var i = 0; i < all.length; i++) {
+
+      //if vehicle found in list
       if (all[i].numberplate === noPlate) {
+        //if in white list
         if (all[i].is === 'white') {
           body['permission'] = true;
           body['entry'] = moment().format('MMMM Do YYYY, h:mm:ss a')
           body['exit'] = moment().add(4, 'hours').format('MMMM Do YYYY, h:mm:ss a')
-        }
-        else if (all[i].is === 'black') {
-          body['permission'] = false;
+          data['new'] = false
+          return saveVeichle(body);
         }
         else {
-          body['permission'] = true;
-          body['entry'] = moment().format('MMMM Do YYYY, h:mm:ss a')
-          body['exit'] = moment().add(4, 'hours').format('MMMM Do YYYY, h:mm:ss a')
+          body['permission'] = false;
+          return saveVeichle(body);
         }
+
       }
     }
-    var newVeichle = new VeichleModel(body);
-    newVeichle.save()
-      .then((data) => {
-        if (data['permission']) {
-          res.json({ msg: `Veichle ${data['numberplate']} is allowed to enter!`, type: 'success' })
-        } else {
-          res.json({ msg: `Veichle ${data['numberplate']} is not allowed to enter!`, type: 'danger' })
-        }
-      })
+    //if new vehicle 
+    body['permission'] = true;
+    console.log('setting permission for new v')
+    body['entry'] = moment().format('MMMM Do YYYY, h:mm:ss a')
+    body['exit'] = moment().add(4, 'hours').format('MMMM Do YYYY, h:mm:ss a')
+    body['new'] = true;
+    return saveVeichle(body);
+
+
 
   }
   catch (e) {

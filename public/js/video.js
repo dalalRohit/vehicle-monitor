@@ -8,7 +8,6 @@ const handleStateCode = function (state) {
     var codes = Object.keys(stateCodes).map((code) => {
         return { code, name: stateCodes[code] }
     })
-    console.log(codes);
     $('#a-code')
         .find('option')
         .remove()

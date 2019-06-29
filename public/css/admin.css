@@ -1,0 +1,7 @@
+.type-chart{
+    width: 50%;
+    margin: 0 25% 0 25%;
+    box-sizing: border-box;
+    max-width: 100%;;
+    border: 1px saddlebrown solid;
+}

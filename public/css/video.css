@@ -1,0 +1,44 @@
+.player{
+    width: 40%;
+    margin: 10px 30% 20px 30%;
+}
+
+/* non video stuff */
+.myform{
+    width: 80%;
+    margin: 0 10% 0 10%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+.info{
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 100%;
+    width: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: lightsteelblue;
+}
+
+.mycanvas{
+    border: 1px solid black;
+    width: 40%;
+    margin: 10px 30% 0 30%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+#flash{
+    width: 70%;
+    margin: 10px 15% 10px 15%;
+    box-sizing: border-box;
+    text-align: center;
+}
+@media(max-width:699px) {
+    .player{
+        width: 90%;
+        margin: 10px 5% 20px 5%;
+    }
+}

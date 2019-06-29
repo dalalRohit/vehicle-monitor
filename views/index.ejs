@@ -1,0 +1,72 @@
+<link rel="stylesheet" href="./../public/css/video.css">
+<% include ./partials/header %>
+
+<!-- validation -->
+<div class="alert alert-dismissible " id="flash">
+  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+</div>
+<!-- <div class="loader">Loading...</div> -->
+
+<video class="player" id="videoPlayer" controls muted autoplay>
+  <source id="mysrc" src="/video" type="video/mp4">
+</video>
+
+
+<!-- <% include ./partials/message %> -->
+
+<div class="container">
+  <!-- 1.type of veichle 2.licence number 3.image captured at click time -->
+  <div class="info">
+    <!-- <button onclick="snap()" id="vpbtn" class="btn btn-info">Take screenshot</button> -->
+
+    <div class="myform" id="demo">
+
+      <form>
+        <div class="form-group">
+          <label for="v-type">Type</label>
+          <select class="form-control" required name="v-type" id="v-type">
+            <option selected disabled value="">Veichle type</option>
+          </select>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-sm-3">
+            <label for="v-state">State</label>
+            <select class="form-control" required name="v-state" id="v-state" onchange="handleStateCode(this.value);">
+              <option selected disabled value="">State code</option>
+            </select>
+          </div>
+
+          <div class="form-group col-sm-3">
+            <label for="">Area</label>
+            <select name="a-code" id="a-code" class="form-control" required>
+              <option disabled value="" selected>Select state first </option>
+            </select>
+          </div>
+
+          <div class="form-group col-sm-3">
+            <label for="v-series">Series</label>
+            <input style="text-transform: uppercase;" type="text" id="v-series" name="a-series" class="form-control"
+              required />
+          </div>
+
+          <div class="col-sm-3 form-group">
+            <label for="v-number">Number</label>
+            <input type="text" class="form-control" id="v-number" name="v-number" required />
+          </div>
+        </div>
+
+        <button type="button" onclick="handleForm()" class="btn btn-info">Add veichle</button>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<div class="mycanvas">
+  <canvas></canvas>
+</div>
+
+<script src="./../public/js/video.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="./../public/js/form.js"></script>

@@ -1,9 +1,17 @@
 require('dotenv').config();
 
 const { MongoClient } = require('mongodb');
-
-MongoClient.connect(process.env.LOCAL_DB_URL, { useNewUrlParser: true }, (err, client) => {
-    var db = client.db('veichle');
+let url, db_name = null;
+if (process.env.NODE_ENV === 'test') {
+    url = process.env.LOCAL_DB_URL
+    db_name = 'veichle';
+}
+else {
+    url = process.env.MLAB_DB_URL
+    db_name = 'vehicle-monitor'
+}
+MongoClient.connect(url, { useNewUrlParser: true }, (err, client) => {
+    var db = client.db(db_name);
     var data = [
         { type: 'Car', state: 'MH', area: '04', series: 'GU', number: '8598', is: 'white' },
         { type: 'Auto', state: 'JK', area: '10', series: 'GV', number: '1234', is: 'black' },

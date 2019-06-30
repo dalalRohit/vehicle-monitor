@@ -49,7 +49,6 @@ var VeichleSchema = new mongoose.Schema({
     }
 }, { strict: false });
 
-//methdos
 
 VeichleSchema.statics.getVeichleByNumber = function (number) {
     var Veichle = this;
@@ -65,9 +64,6 @@ VeichleSchema.statics.markExit = async function (exit) {
             exit: moment().format('MMMM Do YYYY, h:mm:ss a')
         }
     })
-
-
-
 }
 VeichleSchema.statics.getEnteredVeichles = function () {
     var Veichle = this;

@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-var VeichleModel = require('./../models/veichle');
+var VeichleModel = require('../models/veichle');
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {

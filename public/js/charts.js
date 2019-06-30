@@ -1,5 +1,4 @@
 let myChart = document.getElementById('type-chart').getContext('2d');
-// MH-04-GU-8598
 var flash = document.getElementById('flash');
 var photo = document.getElementById('photo');
 flash.style.display = 'none';
@@ -32,7 +31,6 @@ function getVehicle() {
     else {
         axios.get(`/veichle?number=${number}`)
             .then((res) => {
-                // console.log(res.data);
 
                 //get vehicle image from DB
                 flash.classList = `text-center alert alert-${res.data.type}`;

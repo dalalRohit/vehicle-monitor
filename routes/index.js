@@ -5,80 +5,16 @@ var path = require('path');
 var moment = require('moment');
 var multer = require('multer');
 
-
-// -------------------------------------------START MULTER CONFIG
-var storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, './uploads/')
-  },
-  filename: function (req, file, cb) {
-    // https://github.com/expressjs/multer/issues/513
-    cb(null, `sample.jpg`)
-  }
-})
-const fileFilter = (req, file, cb) => {
-  if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
-    cb(null, true);
-  }
-  else {
-    cb(new Error('Only jpeg and png'), false);
-  }
-}
-//Multer upload rules
-var upload = multer({
-  storage,
-  limits: {
-    fileSize: 1024 * 1024 * 5
-  },
-  fileFilter
-});
-// --------------------------------------------END MULTER CONFIG
-
 // Veichle model
 var VeichleModel = require('./../models/veichle');
 var ListModel = require('./../models/list')
 
+//Main page
 router.get('/', function (req, res) {
   res.render('index', { title: "IIT-B ASSGN", type: 'gate' });
 })
 
-/* GET home page. */
-router.get('/video', function (req, res, next) {
-  const vPath = path.join(__dirname, './../public/videos/sample.mp4');
-  const stat = fs.statSync(vPath)
-  const fileSize = stat.size
-  const range = req.headers.range
-
-  if (range) {
-    const parts = range.replace(/bytes=/, "").split("-")
-    const start = parseInt(parts[0], 10)
-    const end = parts[1]
-      ? parseInt(parts[1], 10)
-      : fileSize - 1
-
-    const chunksize = (end - start) + 1
-    const file = fs.createReadStream(vPath, { start, end })
-    const head = {
-      'Content-Range': `bytes ${start}-${end}/${fileSize}`,
-      'Accept-Ranges': 'bytes',
-      'Content-Length': chunksize,
-      'Content-Type': 'video/mp4',
-    }
-
-    res.writeHead(206, head)
-    file.pipe(res)
-  } else {
-    const head = {
-      'Content-Length': fileSize,
-      'Content-Type': 'video/mp4',
-    }
-    res.writeHead(200, head)
-    fs.createReadStream(vPath).pipe(res)
-  }
-});
-
-
-//GET /veichles
+//Get all vehicles from DB
 router.get('/veichles', async (req, res) => {
   VeichleModel.getTotalVeichles()
     .then((data) => {
@@ -89,7 +25,7 @@ router.get('/veichles', async (req, res) => {
     })
 })
 
-// GET /veichle
+// Get particular veichle by numberplate
 router.get('/veichle', (req, res) => {
   let number = req.query.number;
   // console.log('veichle', number);
@@ -105,6 +41,7 @@ router.get('/veichle', (req, res) => {
   })
 })
 
+//Get all vehicles which are inside campus
 router.get('/entered', (req, res) => {
   VeichleModel.getEnteredVeichles().then((data) => {
     res.send(data);
@@ -113,12 +50,12 @@ router.get('/entered', (req, res) => {
   })
 })
 
+//Update details of vehicle which left
 router.post('/exit', (req, res) => {
   let exit = req.body.number;
 
   VeichleModel.markExit(exit)
     .then((data) => {
-      console.log(data);
       if (data.nModified) {
         res.send({ msg: `Veichle ${exit} left!` });
       }
@@ -128,7 +65,7 @@ router.post('/exit', (req, res) => {
     })
 })
 
-//GET /delete
+//Delete all vehicles [REST]
 router.get('/delete', async (req, res) => {
   const x = await VeichleModel.remove();
 
@@ -139,7 +76,8 @@ router.get('/delete', async (req, res) => {
 })
 
 
-router.post('/validate', upload.single('image'), async (req, res, next) => {
+//Validate data,generates image from ArrayBuffer for particular image
+router.post('/validate', async (req, res, next) => {
   try {
     var data = req.body.data;
 
@@ -202,13 +140,13 @@ router.post('/validate', upload.single('image'), async (req, res, next) => {
         }
         else {
           body['permission'] = false;
+          body['inside'] = false;
           return saveVeichle(body);
         }
 
       }
     }
     //if new vehicle 
-    console.log('setting permission for new v')
     body['permission'] = true;
     body['inside'] = true;
     body['entry'] = moment().format('MMMM Do YYYY, h:mm:ss a')

@@ -8,11 +8,10 @@ var expressLayouts = require('express-ejs-layouts');
 var cookieParser = require('cookie-parser');
 var flash = require('connect-flash');
 const session = require('express-session');
-// const webpush = require('web-push');
 
 //Routes
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var adminRouter = require('./routes/admin');
 
 var app = express();
 var bodyParser = require('body-parser');
@@ -60,7 +59,7 @@ app.use('/temp', express.static(path.join(__dirname, 'temp')))
 app.use('/sw', express.static(path.join(__dirname, './sw.js')))
 
 app.use('/', indexRouter);
-app.use('/admin', usersRouter);
+app.use('/admin', adminRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

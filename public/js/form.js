@@ -1,3 +1,5 @@
+//setup webcam
+
 var video = document.querySelector('.player');
 var entryVideo = document.querySelector('#entryVideoPlayer');
 var exitPlayer = document.querySelector('#exitVideoPlayer');
@@ -33,16 +35,16 @@ entryVideo.addEventListener('loadedmetadata', function () {
     canvas.height = h;
 }, false);
 
+
+//capture screenshot
 async function snap() {
     context.fillRect(0, 0, w, h);
     context.drawImage(entryVideo, 0, 0, w, h);
     canvas.style.display = 'block';
-
-
 }
 
+//front end form validation
 function handleForm() {
-    //get all form fields
     snap();
     let vType = $("#v-type :selected").val();
     let vState = $("#v-state :selected").val();
@@ -50,14 +52,11 @@ function handleForm() {
     let vSeries = document.getElementById('v-series').value.toUpperCase();
     let vNumber = document.getElementById('v-number').value;
     if (vType === '' || vState === '' || vArea === '' || vSeries === '' || vNumber === '') {
-        // alert('Enter all fields');
         flash.innerHTML = 'Enter all fields';
         flash.classList = "alert alert-danger";
         flash.style.display = 'block';
     }
-    // console.log(vType, vState, vArea, vSeries, vNumber);
     var url = canvas.toDataURL();
-    // console.log(url);
     let formData = {
         type: vType,
         state: vState,
@@ -66,7 +65,6 @@ function handleForm() {
         number: vNumber,
         imageUrl: url
     }
-    // console.log(url)
     axios.post('/validate', { data: formData })
         .then((res) => {
             if (flash.classList.length > 0) {
@@ -84,9 +82,9 @@ function handleForm() {
 
 }
 
+//get vehicles inside campus
 function loadEnteredVehicles() {
     axios.get('/entered').then((res) => {
-        // console.log(data);
         let x = res.data;
         x.map((i) => {
             $('#exitSelect')
@@ -94,6 +92,8 @@ function loadEnteredVehicles() {
         })
     })
 }
+
+//manage vehicles exiting 
 function handleExit() {
     let exitV = $('#exitSelect').val();
     // console.log(exitV);
@@ -110,6 +110,7 @@ function handleExit() {
         })
 
 }
+
 
 window.onload = function () {
     loadEnteredVehicles();

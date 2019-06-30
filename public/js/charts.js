@@ -1,4 +1,9 @@
 let myChart = document.getElementById('type-chart').getContext('2d');
+// MH-04-GU-8598
+var flash = document.getElementById('flash');
+var photo = document.getElementById('photo');
+flash.style.display = 'none';
+photo.style.display = 'none';
 
 var totalTypes = null;
 axios.get('/admin/types')
@@ -17,5 +22,33 @@ axios.get('/admin/types')
         })
 
     })
-console.log(totalTypes);
 
+function getVehicle() {
+    let number = document.getElementById('v-number').value;
+    number = number.toUpperCase();
+    if (number === '') {
+        alert('Number required!');
+    }
+    else {
+        axios.get(`/veichle?number=${number}`)
+            .then((res) => {
+                // console.log(res.data);
+
+                //get vehicle image from DB
+                flash.classList = `text-center alert alert-${res.data.type}`;
+                flash.style.display = 'block';
+                flash.innerHTML = res.data.msg
+                if (res.data.img) {
+                    var arrayBufferView = new Uint8Array(res.data.img.data);
+                    var blob = new Blob([arrayBufferView], { type: "image/jpeg" });
+                    var urlCreator = window.URL || window.webkitURL;
+                    var imageUrl = urlCreator.createObjectURL(blob);
+                    photo.src = imageUrl;
+                    photo.style.display = 'block';
+                }
+
+
+
+            })
+    }
+}

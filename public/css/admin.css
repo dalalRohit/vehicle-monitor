@@ -5,3 +5,14 @@
     max-width: 100%;;
     border: 1px saddlebrown solid;
 }
+
+#v-number{
+    text-transform: capitalize;
+}
+
+#photo{
+    border: 1px solid red;
+    width: 300px;
+    height: 300px;
+
+}

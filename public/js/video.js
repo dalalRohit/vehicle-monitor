@@ -1,5 +1,4 @@
-const VP = document.getElementById('videoPlayer') // player
-const VPToggle = document.getElementById('vpbtn');
+
 var rtoCodes = null;
 var video = document.querySelector("#videoPlayer");
 const handleStateCode = function (state) {
@@ -12,7 +11,7 @@ const handleStateCode = function (state) {
         .find('option')
         .remove()
         .end()
-        .append(`<option value=State codes>${state}- State codes</option>`)
+        .append(`<option >${state}- State codes</option>`)
         .val('whatever');
     codes = codes.sort();
     codes.map((code) => {

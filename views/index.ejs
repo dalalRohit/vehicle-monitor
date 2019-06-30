@@ -7,19 +7,30 @@
 </div>
 <!-- <div class="loader">Loading...</div> -->
 
-<video class="player" id="videoPlayer" controls muted autoplay>
-  <source id="mysrc" src="/video" type="video/mp4">
-</video>
+<div class="row">
+
+  <div class="col-sm-6 entry-gate">
+    <h5 class="text-center alert alert-warning">Entry Gate</h5>
+    <video class="player" id="entryVideoPlayer" controls muted autoplay>
+    </video>
+  </div>
+
+  <div class="col-sm-6 exit-gate">
+    <h5 class="text-center alert alert-warning">Exit Gate</h5>
+    <video class="player" id="exitVideoPlayer" controls muted autoplay>
+    </video>
+  </div>
+</div>
 
 
 <!-- <% include ./partials/message %> -->
 
 <div class="container">
   <!-- 1.type of veichle 2.licence number 3.image captured at click time -->
-  <div class="info">
-    <!-- <button onclick="snap()" id="vpbtn" class="btn btn-info">Take screenshot</button> -->
+  <div class="info row">
 
-    <div class="myform" id="demo">
+    <!-- entry gate form -->
+    <div class="myform col-sm-6">
 
       <form>
         <div class="form-group">
@@ -60,10 +71,20 @@
       </form>
 
     </div>
+
+    <!-- exit gate form -->
+    <div class="myform col-sm-6">
+      <label for="exitSelect">Which vehicle left?</label>
+      <select name="exitSelect" class="form-control" id="exitSelect">
+        <option selected disabled>Which veichle left?</option>
+      </select>
+      <button type="button" onclick="handleExit()" class="btn btn-info">Exit veichel</button>
+    </div>
   </div>
 </div>
 
 <div class="mycanvas">
+  <h6 class="alert alert-info text-center">Captured screenshot</h6>
   <canvas></canvas>
 </div>
 

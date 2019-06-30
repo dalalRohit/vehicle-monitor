@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+var moment = require('moment');
 
 var VeichleSchema = new mongoose.Schema({
     type: {
@@ -41,14 +42,36 @@ var VeichleSchema = new mongoose.Schema({
     },
     new: {
         type: Boolean
+    },
+    inside: {
+        type: Boolean,
+        required: true
     }
 }, { strict: false });
 
 //methdos
 
-VeichleSchema.statics.getTotalTime = function () {
+VeichleSchema.statics.getVeichleByNumber = function (number) {
     var Veichle = this;
+    return Veichle.findOne({ numberplate: number });
 
+}
+
+VeichleSchema.statics.markExit = async function (exit) {
+    var Veichle = this;
+    return Veichle.updateOne({ 'numberplate': exit }, {
+        $set: {
+            inside: false,
+            exit: moment().format('MMMM Do YYYY, h:mm:ss a')
+        }
+    })
+
+
+
+}
+VeichleSchema.statics.getEnteredVeichles = function () {
+    var Veichle = this;
+    return Veichle.find({ inside: true });
 }
 
 VeichleSchema.statics.getTotalVeichles = function () {

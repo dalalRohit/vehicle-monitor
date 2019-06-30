@@ -1,25 +1,11 @@
 .player{
-    width: 40%;
-    margin: 10px 30% 20px 30%;
+    width: 50%;
+    margin: 10px 25% 20px 25%;
 }
 
-/* non video stuff */
 .myform{
-    width: 80%;
-    margin: 0 10% 0 10%;
-    max-width: 100%;
-    box-sizing: border-box;
-}
-.info{
-    display: flex;
-    flex-flow: column;
-    justify-content: center;
-    align-items: center;
-    max-width: 100%;
-    width: 100%;
-    padding: 20px;
-    box-sizing: border-box;
-    background-color: lightsteelblue;
+    background-color: #eee;
+    /* border: 1px solid black; */
 }
 
 .mycanvas{

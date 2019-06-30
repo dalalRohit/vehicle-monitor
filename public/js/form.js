@@ -1,5 +1,23 @@
+var video = document.querySelector('.player');
+var entryVideo = document.querySelector('#entryVideoPlayer');
+var exitPlayer = document.querySelector('#exitVideoPlayer');
+var vendorUrl = window.URL || webkitURL;
+navigator.getMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
 
-var video = document.querySelector('video');
+//capture https://stackoverflow.com/questions/27120757/failed-to-execute-createobjecturl-on-url
+navigator.getMedia({
+    video: true,
+    audio: false
+}, function (stream) {
+    // console.log(stream);
+    entryVideo.srcObject = stream;
+    exitPlayer.srcObject = stream;
+    entryVideo.play();
+    exitPlayer.play();
+}, function (err) {
+    console.log(err);
+})
+
 var canvas = document.querySelector('canvas');
 var context = canvas.getContext('2d');
 var flash = document.getElementById('flash');
@@ -7,9 +25,9 @@ flash.style.display = 'none';
 var w, h, ratio;
 canvas.style.display = 'none';
 
-video.addEventListener('loadedmetadata', function () {
-    ratio = video.videoWidth / video.videoHeight;
-    w = video.videoWidth - 100;
+entryVideo.addEventListener('loadedmetadata', function () {
+    ratio = entryVideo.videoWidth / entryVideo.videoHeight;
+    w = entryVideo.videoWidth - 100;
     h = parseInt(w / ratio, 10);
     canvas.width = w;
     canvas.height = h;
@@ -17,7 +35,7 @@ video.addEventListener('loadedmetadata', function () {
 
 async function snap() {
     context.fillRect(0, 0, w, h);
-    context.drawImage(video, 0, 0, w, h);
+    context.drawImage(entryVideo, 0, 0, w, h);
     canvas.style.display = 'block';
 
 
@@ -57,9 +75,43 @@ function handleForm() {
             flash.className = `alert alert-${res.data.type}`
             flash.innerHTML = res.data.msg
             flash.style.display = 'block';
+
+            loadEnteredVehicles();
         })
         .catch((err) => {
             console.log(err);
         })
 
 }
+
+function loadEnteredVehicles() {
+    axios.get('/entered').then((res) => {
+        // console.log(data);
+        let x = res.data;
+        x.map((i) => {
+            $('#exitSelect')
+                .append(`<option value=${i.numberplate}>${i.numberplate}</option>`)
+        })
+    })
+}
+function handleExit() {
+    let exitV = $('#exitSelect').val();
+    // console.log(exitV);
+    axios.post('/exit', { number: exitV })
+        .then((res) => {
+            console.log(res);
+            flash.className = `alert alert-success`
+            flash.innerHTML = res.data.msg
+            flash.style.display = 'block';
+            $('#exitSelect').find('option').remove();
+
+            loadEnteredVehicles();
+
+        })
+
+}
+
+window.onload = function () {
+    loadEnteredVehicles();
+}
+

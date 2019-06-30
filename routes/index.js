@@ -82,12 +82,50 @@ router.get('/video', function (req, res, next) {
 router.get('/veichles', async (req, res) => {
   VeichleModel.getTotalVeichles()
     .then((data) => {
-      res.send(data);
+      res.send(data)
     })
     .catch((err) => {
       throw new Error(err);
     })
+})
 
+// GET /veichle
+router.get('/veichle', (req, res) => {
+  let number = req.query.number;
+  // console.log('veichle', number);
+  VeichleModel.getVeichleByNumber(number).then((data) => {
+    if (data) {
+      res.send({ msg: `Vehicle ${data.numberplate} found!`, img: data.image, type: 'success' });
+    } else {
+      res.send({ msg: `Vehicle ${number} not found!`, type: 'danger' });
+    }
+    // console.log(data);
+  }).catch((err) => {
+    console.log(err);
+  })
+})
+
+router.get('/entered', (req, res) => {
+  VeichleModel.getEnteredVeichles().then((data) => {
+    res.send(data);
+  }).catch((err) => {
+    console.log(err);
+  })
+})
+
+router.post('/exit', (req, res) => {
+  let exit = req.body.number;
+
+  VeichleModel.markExit(exit)
+    .then((data) => {
+      console.log(data);
+      if (data.nModified) {
+        res.send({ msg: `Veichle ${exit} left!` });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    })
 })
 
 //GET /delete
@@ -156,9 +194,10 @@ router.post('/validate', upload.single('image'), async (req, res, next) => {
         //if in white list
         if (all[i].is === 'white') {
           body['permission'] = true;
+          body['inside'] = true
           body['entry'] = moment().format('MMMM Do YYYY, h:mm:ss a')
           body['exit'] = moment().add(4, 'hours').format('MMMM Do YYYY, h:mm:ss a')
-          data['new'] = false
+          body['new'] = false
           return saveVeichle(body);
         }
         else {
@@ -169,8 +208,9 @@ router.post('/validate', upload.single('image'), async (req, res, next) => {
       }
     }
     //if new vehicle 
-    body['permission'] = true;
     console.log('setting permission for new v')
+    body['permission'] = true;
+    body['inside'] = true;
     body['entry'] = moment().format('MMMM Do YYYY, h:mm:ss a')
     body['exit'] = moment().add(4, 'hours').format('MMMM Do YYYY, h:mm:ss a')
     body['new'] = true;
